@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I’m Sorry</title>
+
+<style>
+* {margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#121212,#1e1e1e,#2a2a2a);
+    overflow:hidden;
+    transition:1.2s ease;
+}
+
+/* Floating elements */
+.floating{
+    position:absolute;
+    font-size:20px;
+    opacity:0.7;
+    animation:float 6s linear infinite;
+}
+@keyframes float{
+    from{transform:translateY(100vh);}
+    to{transform:translateY(-10vh);}
+}
+
+/* Premium Glass Chat */
+.chat-box{
+    width:360px;
+    height:560px;
+    backdrop-filter:blur(18px) saturate(140%);
+    background:rgba(255,255,255,0.08);
+    border-radius:22px;
+    border:1px solid rgba(255,255,255,0.15);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    transition:0.8s;
+}
+
+.chat-header{
+    padding:14px;
+    text-align:center;
+    color:#eee;
+    font-size:14px;
+    letter-spacing:0.5px;
+    border-bottom:1px solid rgba(255,255,255,0.12);
+}
+
+.messages{
+    flex:1;
+    padding:14px;
+    overflow-y:auto;
+}
+
+/* Message row */
+.row{
+    display:flex;
+    margin:10px 0;
+    align-items:flex-end;
+}
+
+.right{ justify-content:flex-end; }
+
+/* Avatar */
+.avatar{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#666,#999);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:9px;
+    color:#fff;
+    margin:0 6px;
+    font-weight:600;
+}
+
+/* Message */
+.msg-wrap{ max-width:70%; }
+
+.name{
+    font-size:10px;
+    color:#aaa;
+    margin-bottom:2px;
+}
+
+.msg{
+    padding:9px 13px;
+    border-radius:16px;
+    font-size:13px;
+    animation:fade 0.4s forwards;
+}
+
+.left .msg{
+    background:rgba(255,255,255,0.12);
+    color:#ddd;
+}
+
+.right .msg{
+    background:linear-gradient(135deg,#4a90e2,#6aa8ff);
+    color:#fff;
+}
+
+@keyframes fade{
+    from{opacity:0;transform:translateY(8px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+/* Buttons */
+.btn{
+    margin:6px;
+    padding:8px 14px;
+    border:none;
+    border-radius:18px;
+    cursor:pointer;
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+    backdrop-filter:blur(6px);
+}
+
+/* Bright lavender after forgiveness */
+.love{
+    background:linear-gradient(135deg,#d8b4fe,#c084fc,#a855f7);
+}
+
+/* Start button */
+.center-btn{
+    position:absolute;
+    bottom:25px;
+    padding:12px 24px;
+    border:none;
+    border-radius:25px;
+    background:linear-gradient(135deg,#ff5e57,#ff7b72);
+    color:white;
+    cursor:pointer;
+    box-shadow:0 5px 20px rgba(255,94,87,0.4);
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="chat-box">
+    <div class="chat-header">Truth Box🥺</div>
+    <div class="messages" id="chat"></div>
+</div>
+
+<button class="center-btn" onclick="start()">Initiate</button>
+
+<script>
+const chat=document.getElementById("chat");
+
+/* Broken hearts */
+let brokenInterval=setInterval(spawnBroken,500);
+
+function spawnBroken(){
+    let el=document.createElement("div");
+    el.className="floating";
+    el.innerText="💔";
+    el.style.left=Math.random()*100+"vw";
+    el.style.animationDuration=(4+Math.random()*3)+"s";
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),6000);
+}
+
+/* Love elements */
+function spawnLove(){
+    const items=["❤️","🍫","🍬"];
+    let el=document.createElement("div");
+    el.className="floating";
+    el.innerText=items[Math.floor(Math.random()*items.length)];
+    el.style.left=Math.random()*100+"vw";
+    el.style.animationDuration=(4+Math.random()*3)+"s";
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),6000);
+}
+
+/* Add message */
+function addMsg(text,side="right"){
+    let row=document.createElement("div");
+    row.className="row "+side;
+
+    let avatar=document.createElement("div");
+    avatar.className="avatar";
+    avatar.innerText = side==="right" ? "Idiot" : "Anu";
+
+    let wrap=document.createElement("div");
+    wrap.className="msg-wrap";
+
+    let name=document.createElement("div");
+    name.className="name";
+    name.innerText = side==="right" ? "Me" : "Anu";
+
+    let msg=document.createElement("div");
+    msg.className="msg";
+    msg.innerText=text;
+
+    wrap.appendChild(name);
+    wrap.appendChild(msg);
+
+    if(side==="left"){
+        row.appendChild(avatar);
+        row.appendChild(wrap);
+    } else {
+        row.appendChild(wrap);
+        row.appendChild(avatar);
+    }
+
+    chat.appendChild(row);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+/* Typing */
+function typing(cb){
+    let t=document.createElement("div");
+    t.className="row left";
+    t.innerHTML='<div class="avatar">Anu</div><div class="msg">...</div>';
+    chat.appendChild(t);
+
+    setTimeout(()=>{chat.removeChild(t);cb();},1000);
+}
+
+/* Choices */
+function choices(arr){
+    let wrap=document.createElement("div");
+    arr.forEach(o=>{
+        let b=document.createElement("button");
+        b.className="btn";
+        b.innerText=o.text;
+        b.onclick=()=>{
+            wrap.remove();
+            addMsg(o.text,"left");
+            o.action();
+        };
+        wrap.appendChild(b);
+    });
+    chat.appendChild(wrap);
+}
+
+/* Flow */
+function start(){
+    document.querySelector(".center-btn").remove();
+
+    typing(()=>{addMsg("Hey Anu…");
+    typing(()=>{addMsg("I’ve been thinking about what I said...");
+    typing(()=>{addMsg("I didn’t realise it might hurt you...");
+    
+    choices([
+        {text:"It did hurt",action:()=>{
+            typing(()=>{addMsg("I understand… and I’m really sorry.");
+            typing(()=>{addMsg("You deserve a sincere apology from me");
+            final();});
+            });
+        }},
+        {text:"I’m okay",action:()=>{
+            typing(()=>{addMsg("Still… I shouldn’t have said it....this idiot needs to learn more ");
+            typing(()=>{addMsg("You matter more than anyone else to me, Anu❤️");
+            final();});
+            });
+        }}
+    ]);
+
+    });
+    });
+    });
+}
+
+/* Final */
+function final(){
+    typing(()=>{addMsg("Can I make this right?");
+    askForgiveness();
+    });
+}
+
+function askForgiveness(){
+    choices([
+        {text:"I forgive you", action:forgiven},
+        {text:"Need time", action:needMoreTime}
+    ]);
+}
+
+function needMoreTime(){
+    typing(()=>addMsg("I understand, I’ll wait...."));
+
+    setTimeout(()=>{
+        typing(()=>{
+            const followUps=[
+                "Just checking… is it okay now?",
+                "Take your time… but can I try again?",
+                "I’m still here… would you forgive me now?"
+            ];
+            addMsg(followUps[Math.floor(Math.random()*followUps.length)]);
+            askForgiveness();
+        });
+    },5000);
+}
+
+/* Forgiven */
+function forgiven(){
+    clearInterval(brokenInterval);
+    document.body.classList.add("love");
+    setInterval(spawnLove,400);
+
+    typing(()=>{addMsg("Thank you Anu… really ❤️ you 30000000000");
+    typing(()=>{addMsg("I’ll make sure I never hurt you like this again.");
+    });
+    });
+}
+</script>
+
+</body>
+</html>
